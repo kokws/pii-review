@@ -95,7 +95,11 @@ There are two paths to add a literal that the automatic detector missed:
 
 Click the **`+ Add manual PII entity`** button in the entity panel. The
 modal opens with an empty text field — type the exact literal you want
-redacted, choose a category, and confirm. This is the right path when:
+redacted, choose a category, and confirm.
+
+![Manual entity modal — type the literal text + pick a category + Add. Fix FE-1 ensures the Category dropdown resets to OTHER on every open.](docs/screenshots/manual_modal.gif)
+
+This is the right path when:
 
 - The literal doesn't sit cleanly under one clickable element (multi-word
   names that cross line breaks, joined account numbers).
