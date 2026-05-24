@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PII Review</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link href="/static/pii_review.css?v=11" rel="stylesheet">
+</head>
+<body>
+
+<nav id="pr-navbar">
+  <span class="pr-brand">
+    <i class="fas fa-user-shield"></i>
+    <span class="pr-brand-mark">PII</span><span class="pr-brand-tail"> Review</span>
+  </span>
+  <span class="pr-nav-sep"></span>
+  <span class="pr-nav-client" id="pr-nav-client"><i class="fas fa-user-tag"></i> <em>no client selected</em></span>
+  <span class="pr-status-dot">Ready</span>
+</nav>
+
+<div id="pr-toolbar">
+  <label>Client</label>
+  <select id="pr-client-select" onchange="prOnClientChange()"></select>
+  <button class="pr-btn" id="pr-btn-new-client" onclick="prOpenNewClient()" title="Create a new client">
+    <i class="fas fa-plus"></i> New
+  </button>
+  <div class="pr-sep"></div>
+  <button class="pr-btn pr-btn-primary" id="pr-btn-upload" onclick="document.getElementById('pr-upload').click()" disabled>
+    <i class="fas fa-upload"></i> Upload PDF
+  </button>
+  <input type="file" id="pr-upload" accept=".pdf" multiple style="display:none" onchange="prUpload(this)">
+  <div class="pr-sep"></div>
+  <label>File</label>
+  <select id="pr-file-select" onchange="prLoadFile()" disabled></select>
+  <div class="pr-sep"></div>
+  <span id="pr-stat-info" class="pr-muted"></span>
+  <div class="pr-spacer"></div>
+  <span class="pr-tokenize-wrap" style="margin: 0 8px;">
+    <label class="pr-toggle" title="Preview redacted + tokenized view on the PDF">
+      <input type="checkbox" id="pr-redact-toggle" onchange="prToggleRedactedView(this.checked)">
+      <span class="pr-toggle-slider"></span>
+    </label>
+    <span class="pr-toggle-label">redacted preview</span>
+  </span>
+  <button class="pr-btn" id="pr-btn-save" onclick="prSaveDecisions()">
+    <i class="fas fa-save"></i> Save Decisions
+  </button>
+  <button class="pr-btn pr-btn-success" id="pr-btn-apply" onclick="prApply()">
+    <i class="fas fa-check-double"></i> Apply → Tokenize and Sanitise PDF
+  </button>
+</div>
+
+<div id="pr-main">
+  <!-- Left: entity list -->
+  <div id="pr-left" class="pr-panel">
+    <div class="pr-empty" id="pr-left-empty">
+      <i class="fas fa-list"></i>
+      <div>Select a client + file above</div>
+      <div class="pr-empty-hint">Entity candidates will appear here</div>
+    </div>
+    <div id="pr-entity-list" style="display:none;"></div>
+  </div>
+  <div id="pr-resize"></div>
+  <!-- Right: PDF + bbox overlays -->
+  <div id="pr-right" class="pr-panel">
+    <div class="pr-empty" id="pr-right-empty">
+      <i class="fas fa-file-pdf"></i>
+      <div>PDF will render here</div>
+      <div class="pr-empty-hint">Click an entity on the left to locate it</div>
+    </div>
+    <div id="pr-pdf-container" style="display:none;"></div>
+  </div>
+</div>
+
+<!-- Single twin-highlight canvas (moved into the current page wrapper on hover) -->
+<canvas id="pr-twin" style="position:absolute;pointer-events:none;z-index:3;display:none;"></canvas>
+
+<!-- Manual add modal -->
+<div id="pr-manual-modal" class="pr-modal" style="display:none;">
+  <div class="pr-modal-content">
+    <h3>Add manual PII entity</h3>
+    <label>Entity text</label>
+    <input type="text" id="pr-manual-text" placeholder="e.g. 42 Some Street, SW1A 1AA">
+    <label>Category</label>
+    <select id="pr-manual-cat">
+      <option value="OTHER" selected>OTHER</option>
+      <option value="PERSON">PERSON</option>
+      <option value="ACCOUNT_NUMBER">ACCOUNT_NUMBER</option>
+      <option value="PHONE_NUMBER">PHONE_NUMBER</option>
+      <option value="EMAIL">EMAIL</option>
+      <option value="ADDRESS">ADDRESS</option>
+      <option value="DATE_OF_BIRTH">DATE_OF_BIRTH</option>
+    </select>
+    <div class="pr-modal-actions">
+      <button class="pr-btn" onclick="prCancelManual()">Cancel</button>
+      <button class="pr-btn pr-btn-primary" onclick="prSubmitManual()">Add</button>
+    </div>
+  </div>
+</div>
+
+<!-- New client modal -->
+<div id="pr-new-client-modal" class="pr-modal" style="display:none;">
+  <div class="pr-modal-content">
+    <h3>Create new client</h3>
+    <label>Client name</label>
+    <input type="text" id="pr-new-client-name" placeholder="e.g. Acme Foundation">
+    <label>Custodian (optional)</label>
+    <input type="text" id="pr-new-client-custodian" placeholder="e.g. UBS / JPM / Schwab / MS">
+    <div class="pr-modal-actions">
+      <button class="pr-btn" onclick="prCancelNewClient()">Cancel</button>
+      <button class="pr-btn pr-btn-primary" onclick="prSubmitNewClient()">Create</button>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="/static/pii_review.js?v=83"></script>
+</body>
+</html>

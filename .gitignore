@@ -1,0 +1,53 @@
+# Runtime data (sensitive PDFs + outputs — NEVER commit)
+data/
+output/
+logs/
+
+# Per-stem debug artefacts the analyze worker writes alongside its source
+# (these will contain real client content when the tool runs against real PDFs)
+modules/*_clean.pdf
+modules/*_ghost_debug/
+modules/*_images/
+modules/*_viz_data.json
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+
+# Virtualenv
+venv/
+.venv/
+env/
+ENV/
+
+# Environment + secrets
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Backup files
+*.bak
+*.bak.*
+
+# Temp / scratch
+_tmp_*
+*.tmp
