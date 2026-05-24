@@ -70,19 +70,44 @@ Open http://localhost:5000/pii_review in a browser.
 2. **Upload a PDF.** The analyze worker runs `pdftohtml` + `pdftotext` +
    PyMuPDF + Presidio + spaCy NER to extract text bounding boxes and
    detect PII candidates.
-3. **Review** the candidate list. Accept/reject each one. Click on the
-   rendered PDF to manually select text and add it as a literal.
+3. **Review** the candidate list. Accept/reject each one. Add anything
+   the detector missed via either path:
+   - **Click on the rendered PDF** to select visible text (default = whole
+     text element, Alt+click = single word, Ctrl+click = add to current
+     selection). The `+ Add manual PII entity` modal pre-fills with the
+     selected text; pick a category and confirm.
+   - **Open the modal directly + type** the entity text. Use this for
+     literals that don't sit cleanly under a clickable text element —
+     long-form names, joined-across-line tokens, or strings you know
+     should be redacted on principle even if they don't render visibly
+     (e.g. account holder names that only appear in metadata you've
+     already seen elsewhere).
 4. **Save Decisions** — propagates choices to the client config so future
    PDFs in the same client auto-detect the same literals.
 5. **Apply → Tokenize and Sanitise** — produces `<stem>_tokenized.pdf` and
    `safe/pii_safe_<uuid>.pdf` in `output/pii_review/clients/<client>/`.
 
-## Selecting text on the PDF (mouse modes)
+## Adding manual entities
+
+There are two paths to add a literal that the automatic detector missed:
+
+### Path A — Type it directly into the modal
+
+Click the **`+ Add manual PII entity`** button in the entity panel. The
+modal opens with an empty text field — type the exact literal you want
+redacted, choose a category, and confirm. This is the right path when:
+
+- The literal doesn't sit cleanly under one clickable element (multi-word
+  names that cross line breaks, joined account numbers).
+- You want to redact a string that doesn't currently render visibly but
+  may appear in metadata or future PDFs in this client.
+- You want to type a list of literals quickly without clicking around.
+
+### Path B — Click-to-select on the rendered PDF (mouse modes)
 
 The rendered PDF on the right is interactive. Hovering highlights what
-will be selected; clicking commits a selection that you then add to the
-entity list (via the `+ Add manual PII entity` modal pre-filled with the
-selected text). Three modes:
+will be selected; clicking commits a selection that pre-fills the
+manual-add modal with the selected text. Three modes:
 
 | Action | Selects |
 |---|---|
